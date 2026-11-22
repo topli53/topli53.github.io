@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>年終獎金與未休特休折現快速試算｜估算與說明</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3138841542076920" crossorigin="anonymous"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 760px; margin: 40px auto; padding: 0 16px; line-height: 1.7; color: #1f2937; background: #ffffff; }
+    h1 { margin-bottom: 8px; }
+    h2 { margin-top: 28px; margin-bottom: 10px; font-size: 20px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
+    .nav { margin-bottom: 18px; font-size: 14px; display: flex; gap: 16px; flex-wrap: wrap; }
+    .nav a { color: #2563eb; text-decoration: none; }
+    .nav a:hover { text-decoration: underline; }
+    .box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; margin: 18px 0; }
+    label { display: block; font-weight: 600; margin-top: 12px; }
+    input { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; box-sizing: border-box; background: #fff; }
+    button { margin-top: 16px; padding: 11px 18px; background: #111827; color: #fff; border: 0; border-radius: 8px; font-size: 15px; cursor: pointer; }
+    button:hover { background: #374151; }
+    .result-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #e5e7eb; }
+    .total { font-size: 20px; font-weight: 700; color: #059669; border-bottom: 0; padding-top: 12px; }
+    .ad-slot { border: 1px dashed #9ca3af; padding: 16px; text-align: center; color: #6b7280; border-radius: 8px; margin: 20px 0; background: #fafafa; }
+    .note-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 16px 20px; margin: 18px 0; font-size: 14px; color: #4b5563; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <a href="/">← 回薪資實領快速試算</a>
+    <a href="/overtime-calc.html">→ 前往時薪與加班費試算</a>
+  </div>
+
+  <h1>年終獎金與未休特休折現快速試算</h1>
+  <p>輸入月薪、年終月數與未休特休天數，快速估算年終毛額與特休折現參考金額。</p>
+
+  <div class="box">
+    <label for="baseSalary">月薪基準（元）</label>
+    <input id="baseSalary" type="number" value="45000" min="0" step="500" />
+
+    <label for="bonusMonths">預估年終月數（例如 1.5 代表 1.5 個月）</label>
+    <input id="bonusMonths" type="number" value="1.5" min="0" max="24" step="0.1" />
+
+    <label for="unusedDays">未休特休天數（天）</label>
+    <input id="unusedDays" type="number" value="3" min="0" max="60" step="0.5" />
+
+    <button type="button" onclick="calcBonus()">立即試算</button>
+  </div>
+
+  <div class="ad-slot">廣告版位預留區（通過廣告審核後替換為廣告碼）</div>
+
+  <div class="box">
+    <div class="result-row"><span>估算日薪（月薪 ÷ 30）</span><strong id="rDaily">$1,500</strong></div>
+    <div class="result-row"><span>預估年終獎金（未扣稅／補充保費）</span><span id="rBonus">$67,500</span></div>
+    <div class="result-row"><span>預估未休特休折現</span><span id="rLeave">$4,500</span></div>
+    <div class="result-row total"><span>預估合計金額（稅前參考）</span><span id="rTotal">$72,000</span></div>
+  </div>
+
+  <h2>計算說明與常見差異</h2>
+  <ul>
+    <li><strong>年終獎金計算基準：</strong>各公司核發年終的計算基礎可能不同（例如以底薪、本薪或平均薪資計算），且通常會依當年度任職期間比例核發。</li>
+    <li><strong>二代健保補充保費提醒：</strong>單筆或全年累計獎金若達法定扣繳門檻，可能涉及補充保費扣繳，實際入帳金額會略低於毛額。</li>
+    <li><strong>未休特休折現：</strong>實務上日薪計算方式與結算時間點依公司制度及勞動法規認定，實際金額以公司結算明細為準。</li>
+  </ul>
+
+  <h2>免責聲明</h2>
+  <div class="note-box">
+    本工具僅提供日常快速估算參考，實際年終獎金與特休折現金額請以公司人事制度、勞動契約及正式薪資單為準。所有輸入數字皆於瀏覽器本機計算，不會儲存於伺服器。
+  </div>
+
+  <script>
+    function fmt(n) {
+      return "$" + Math.round(n).toLocaleString("en-US");
+    }
+    function calcBonus() {
+      const salary = Number(document.getElementById("baseSalary").value) || 0;
+      const months = Number(document.getElementById("bonusMonths").value) || 0;
+      const days = Number(document.getElementById("unusedDays").value) || 0;
+
+      const daily = salary / 30;
+      const bonus = salary * months;
+      const leavePay = daily * days;
+      const total = bonus + leavePay;
+
+      document.getElementById("rDaily").textContent = fmt(daily);
+      document.getElementById("rBonus").textContent = fmt(bonus);
+      document.getElementById("rLeave").textContent = fmt(leavePay);
+      document.getElementById("rTotal").textContent = fmt(total);
+    }
+  </script>
+</body>
+</html>
