@@ -3,11 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>薪資實領快速試算</title>
+  <title>薪資實領快速試算｜扣款估算、試算範例與說明</title>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3138841542076920" crossorigin="anonymous"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 760px; margin: 40px auto; padding: 0 16px; line-height: 1.7; color: #1f2937; background: #ffffff; }
+    h1 { margin-bottom: 8px; }
+    h2 { margin-top: 28px; margin-bottom: 10px; font-size: 20px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
+    .box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; margin: 18px 0; }
+    label { display: block; font-weight: 600; margin-top: 12px; }
+    input { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; box-sizing: border-box; background: #fff; }
+    button { margin-top: 16px; padding: 11px 18px; background: #111827; color: #fff; border: 0; border-radius: 8px; font-size: 15px; cursor: pointer; }
+    button:hover { background: #374151; }
+    .preset-btn { margin-top: 8px; margin-right: 8px; padding: 7px 12px; background: #e5e7eb; color: #111827; font-size: 13px; border-radius: 6px; }
+    .preset-btn:hover { background: #d1d5db; }
+    .result-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #e5e7eb; }
+    .total { font-size: 20px; font-weight: 700; color: #059669; border-bottom: 0; padding-top: 12px; }
+    .ad-slot { border: 1px dashed #9ca3af; padding: 16px; text-align: center; color: #6b7280; border-radius: 8px; margin: 20px 0; background: #fafafa; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 14px; }
+    th, td { border: 1px solid #e5e7eb; padding: 10px; text-align: left; }
+    th { background: #f3f4f6; font-weight: 600; }
+    .note-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 16px 20px; margin: 18px 0; font-size: 14px; color: #4b5563; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 6px; }
+  </style>
 </head>
 <body>
   <h1>薪資實領快速試算</h1>
-  <p><a href="/salary-calc/">前往薪資實領試算工具</a></p>
+  <p>輸入月薪總額與預估扣款比例或固定金額，快速估算每月大約實領金額，方便日常預算規劃與薪資單對帳。</p>
+
+  <div class="box">
+    <label for="salary">月薪總額（元）</label>
+    <input id="salary" type="number" value="45000" min="0" step="500" />
+
+    <label for="laborRate">個人勞保自付估算比例（%）</label>
+    <input id="laborRate" type="number" value="2.5" min="0" max="30" step="0.1" />
+
+    <label for="healthRate">個人健保自付估算比例（%）</label>
+    <input id="healthRate" type="number" value="1.6" min="0" max="30" step="0.1" />
+
+    <label for="otherDeduct">其他固定扣款（伙食費／職工福利金／代扣款，元）</label>
+    <input id="otherDeduct" type="number" value="0" min="0" step="100" />
+
+    <button type="button" onclick="calc()">立即試算</button>
+    <div>
+      <span style="font-size: 13px; color: #6b7280; margin-right: 6px;">快速套用範例：</span>
+      <button type="button" class="preset-btn" onclick="applyPreset(35000, 2.5, 1.6, 0)">月薪 35,000（無其他扣款）</button>
+      <button type="button" class="preset-btn" onclick="applyPreset(45000, 2.5, 1.6, 1500)">月薪 45,000（扣伙食 1,500）</button>
+      <button type="button" class="preset-btn" onclick="applyPreset(65000, 2.5, 1.6, 2000)">月薪 65,000（扣 2,000）</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">廣告版位預留區（通過廣告審核後替換為廣告碼）</div>
+
+  <div class="box" id="outputBox">
+    <div class="result-row"><span>月薪總額</span><strong id="rGross">$45,000</strong></div>
+    <div class="result-row"><span>預估勞保自付</span><span id="rLabor">-$1,125</span></div>
+    <div class="result-row"><span>預估健保自付</span><span id="rHealth">-$720</span></div>
+    <div class="result-row"><span>其他固定扣款</span><span id="rOther">-$0</span></div>
+    <div class="result-row total"><span>預估實領金額</span><span id="rNet">$43,155</span></div>
+  </div>
+
+  <h2>常見扣款說明</h2>
+  <p>台灣上班族每月薪資單上常見的扣款項目，通常包含法定社會保險自付額與公司內部或特定情境扣款：</p>
+  <ul>
+    <li><strong>勞工保險個人自付額：</strong>依投保薪資分級表計算，並非直接用整筆底薪乘上固定百分比，且有投保級距上下限。實際扣款會隨當月投保級距調整。</li>
+    <li><strong>全民健康保險個人自付額：</strong>同樣依投保金額分級計算，若本人有眷屬依附投保，保費會依依附人數增加；若有獎金或符合規定的所得，還可能涉及補充保費。</li>
+    <li><strong>其他固定或變動扣款：</strong>常見如伙食津貼／伙食費抵扣、職工福利金、團保自付、遲到或請假扣款、所得稅扣繳等，各家公司制度不同。</li>
+    <li><strong>勞退 6% 提繳提醒：</strong>雇主提繳的勞工退休金（至少 6%）是由公司負擔，不會從你的薪資實領金額中扣除；只有個人自願提繳的部分才會從薪資中扣出。</li>
+  </ul>
+
+  <h2>試算範例對照</h2>
+  <p>以下以「勞保自付估算 2.5%」、「健保自付估算 1.6%」為預設假設示範，實際金額仍以當期投保級距表與公司薪資明細為準：</p>
+  <table>
+    <thead>
+      <tr>
+        <th>情境範例</th>
+        <th>月薪總額</th>
+        <th>預估勞保（2.5%）</th>
+        <th>預估健保（1.6%）</th>
+        <th>其他扣款</th>
+        <th>預估實領</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>新鮮人／基礎薪資</td>
+        <td>$35,000</td>
+        <td>-$875</td>
+        <td>-$560</td>
+        <td>$0</td>
+        <td><strong>$33,565</strong></td>
+      </tr>
+      <tr>
+        <td>一般上班族＋扣款</td>
+        <td>$45,000</td>
+        <td>-$1,125</td>
+        <td>-$720</td>
+        <td>-$1,500</td>
+        <td><strong>$41,655</strong></td>
+      </tr>
+      <tr>
+        <td>中高階／資深人員</td>
+        <td>$65,000</td>
+        <td>-$1,625</td>
+        <td>-$1,040</td>
+        <td>-$2,000</td>
+        <td><strong>$60,335</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>免責聲明與隱私說明</h2>
+  <div class="note-box">
+    <p style="margin-top: 0;"><strong>試算僅供參考：</strong>本網頁提供的計算結果為簡化估算模型，未逐一對應最新勞保／健保投保薪資分級表、眷屬人數、補充保費、所得稅扣繳或個別企業薪資制度。實際發放金額請以公司正式薪資單及主管機關最新公告為準。</p>
+    <p style="margin-bottom: 0;"><strong>本機運算不留存資料：</strong>所有輸入數字與試算皆在你的瀏覽器本機端即時計算，不會將你輸入的薪資金額上傳或儲存至本工具伺服器。</p>
+  </div>
+
+  <script>
+    function fmt(n) {
+      return "$" + Math.round(n).toLocaleString("en-US");
+    }
+    function calc() {
+      const gross = Number(document.getElementById("salary").value) || 0;
+      const labor = gross * ((Number(document.getElementById("laborRate").value) || 0) / 100);
+      const health = gross * ((Number(document.getElementById("healthRate").value) || 0) / 100);
+      const other = Number(document.getElementById("otherDeduct").value) || 0;
+      const net = gross - labor - health - other;
+
+      document.getElementById("rGross").textContent = fmt(gross);
+      document.getElementById("rLabor").textContent = "-" + fmt(labor);
+      document.getElementById("rHealth").textContent = "-" + fmt(health);
+      document.getElementById("rOther").textContent = "-" + fmt(other);
+      document.getElementById("rNet").textContent = fmt(net);
+    }
+    function applyPreset(gross, laborRate, healthRate, otherDeduct) {
+      document.getElementById("salary").value = gross;
+      document.getElementById("laborRate").value = laborRate;
+      document.getElementById("healthRate").value = healthRate;
+      document.getElementById("otherDeduct").value = otherDeduct;
+      calc();
+    }
+  </script>
 </body>
 </html>
