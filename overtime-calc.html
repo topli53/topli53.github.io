@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>時薪與加班費快速試算｜倍率估算與說明</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3138841542076920" crossorigin="anonymous"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 760px; margin: 40px auto; padding: 0 16px; line-height: 1.7; color: #1f2937; background: #ffffff; }
+    h1 { margin-bottom: 8px; }
+    h2 { margin-top: 28px; margin-bottom: 10px; font-size: 20px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
+    .nav { margin-bottom: 18px; font-size: 14px; }
+    .nav a { color: #2563eb; text-decoration: none; }
+    .nav a:hover { text-decoration: underline; }
+    .box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; margin: 18px 0; }
+    label { display: block; font-weight: 600; margin-top: 12px; }
+    input { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 16px; box-sizing: border-box; background: #fff; }
+    button { margin-top: 16px; padding: 11px 18px; background: #111827; color: #fff; border: 0; border-radius: 8px; font-size: 15px; cursor: pointer; }
+    button:hover { background: #374151; }
+    .result-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #e5e7eb; }
+    .total { font-size: 20px; font-weight: 700; color: #059669; border-bottom: 0; padding-top: 12px; }
+    .ad-slot { border: 1px dashed #9ca3af; padding: 16px; text-align: center; color: #6b7280; border-radius: 8px; margin: 20px 0; background: #fafafa; }
+    .note-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 16px 20px; margin: 18px 0; font-size: 14px; color: #4b5563; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div class="nav"><a href="/">← 回薪資實領快速試算</a></div>
+  <h1>時薪與加班費快速試算</h1>
+  <p>輸入月薪與加班時數，快速估算平日每小時工資與常見加班費金額（試算參考用）。</p>
+
+  <div class="box">
+    <label for="monthlySalary">月薪總額（元）</label>
+    <input id="monthlySalary" type="number" value="45000" min="0" step="500" />
+
+    <label for="hours134">平日加班前 2 小時（約 1.34 倍估算，時數）</label>
+    <input id="hours134" type="number" value="2" min="0" step="0.5" />
+
+    <label for="hours167">平日加班第 3～4 小時（約 1.67 倍估算，時數）</label>
+    <input id="hours167" type="number" value="1" min="0" step="0.5" />
+
+    <button type="button" onclick="calcOT()">立即試算加班費</button>
+  </div>
+
+  <div class="ad-slot">廣告版位預留區（通過廣告審核後替換為廣告碼）</div>
+
+  <div class="box">
+    <div class="result-row"><span>估算平日每小時工資（月薪 ÷ 240）</span><strong id="rHourly">$188</strong></div>
+    <div class="result-row"><span>前段加班費（約 1.34 倍）</span><span id="rOt1">$503</span></div>
+    <div class="result-row"><span>後段加班費（約 1.67 倍）</span><span id="rOt2">$313</span></div>
+    <div class="result-row total"><span>預估加班費合計</span><span id="rOtTotal">$816</span></div>
+  </div>
+
+  <h2>加班費計算常見說明</h2>
+  <ul>
+    <li><strong>平日每小時工資換算：</strong>常見以月薪除以 240 小時作為平日每小時工資估算基準，實際仍依勞動契約約定之工資項目計算（例如部分津貼是否計入）。</li>
+    <li><strong>常見倍率參考：</strong>平日延長工時前 2 小時通常按 1又1/3 倍（約 1.34）計算，再延長至 2 小時以內按 1又2/3 倍（約 1.67）計算；休息日或國定假日出勤另有不同倍率與計算方式。</li>
+    <li><strong>尾數與四捨五入：</strong>各家企業或薪資系統在計算單筆時數與合計金額時，四捨五入方式可能略有差異。</li>
+  </ul>
+
+  <h2>免責聲明</h2>
+  <div class="note-box">
+    本工具僅提供日常快速估算參考，實際加班費發放金額請以勞動基準法最新規定、勞動契約約定及公司正式薪資單為準。所有輸入數字皆於瀏覽器本機計算，不會儲存於伺服器。
+  </div>
+
+  <script>
+    function fmt(n) {
+      return "$" + Math.round(n).toLocaleString("en-US");
+    }
+    function calcOT() {
+      const salary = Number(document.getElementById("monthlySalary").value) || 0;
+      const h1 = Number(document.getElementById("hours134").value) || 0;
+      const h2 = Number(document.getElementById("hours167").value) || 0;
+
+      const hourly = salary / 240;
+      const ot1 = hourly * (4 / 3) * h1;
+      const ot2 = hourly * (5 / 3) * h2;
+      const total = ot1 + ot2;
+
+      document.getElementById("rHourly").textContent = fmt(hourly);
+      document.getElementById("rOt1").textContent = fmt(ot1);
+      document.getElementById("rOt2").textContent = fmt(ot2);
+      document.getElementById("rOtTotal").textContent = fmt(total);
+    }
+  </script>
+</body>
+</html>
